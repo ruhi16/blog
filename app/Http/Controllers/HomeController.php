@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -11,18 +12,26 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function index()
     {
-        return view('home');
+        session(['key' => Auth::user()->name]);
+        foreach(auth()->user()->roles as $role){
+            if($role->name == "Admin"){
+                return redirect()->to('/admins');
+            }else{
+                return redirect()->to('/users');
+            }
+        }
     }
 }

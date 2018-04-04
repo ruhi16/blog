@@ -25,7 +25,7 @@ class UserController extends Controller
         // }else{
         //     echo "User not found";
         // }
-        // return $id;
+        return $user->name;
     }
 
 }

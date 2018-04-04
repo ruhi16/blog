@@ -17,34 +17,24 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home', function(){
-    // echo Auth::user();
-    session(['key' => Auth::user()->name]);
-    foreach(auth()->user()->roles as $role){
-        if($role->name == "Admin"){
-            return redirect()->to('/admins');
-        }else{
-            return redirect()->to('/users');
-        }
-    }
+Route::group(['middleware'=>'auth'], function(){
+    Route::get('/home', 'HomeController@index')->name('home');
+    
+    Route::group(['middleware'=>'user'], function(){
+        Route::get('/users',  'UserController@users');
+        Route::get('/users/{id}', 'UserController@usersDetils')->middleware('checkUser');
 
 
-     
-});
+    });
 
-Route::group(['middleware'=>['auth', 'user']], function(){
-    Route::get('/users',  'UserController@users');
-    Route::get('/users/{id}', 'UserController@usersDetils')->middleware('checkUser');
+
+
+    Route::group(['middleware'=> 'admin'], function(){
+        Route::get('/admins', 'AdminController@admins');
+
+    });
 
 });
-
-
-Route::group(['middleware'=>['auth', 'admin']], function(){
-    Route::get('/admins', 'AdminController@admins');
-
-});
-
 // Route::get('/test', function(){
 //     $user = App\User::find(3);
 //     echo "<b>User: ".$user->name. "</b><br>";
