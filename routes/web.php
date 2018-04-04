@@ -33,10 +33,17 @@ Route::get('/home', function(){
      
 });
 
-Route::get('/admins', 'AdminController@admins');
-Route::get('/users',  'UserController@users');
-Route::get('/users/{id}', 'UserController@usersDetils');
+Route::group(['middleware'=>['auth', 'user']], function(){
+    Route::get('/users',  'UserController@users');
+    Route::get('/users/{id}', 'UserController@usersDetils')->middleware('checkUser');
 
+});
+
+
+Route::group(['middleware'=>['auth', 'admin']], function(){
+    Route::get('/admins', 'AdminController@admins');
+
+});
 
 // Route::get('/test', function(){
 //     $user = App\User::find(3);
